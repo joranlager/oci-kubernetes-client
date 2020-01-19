@@ -5,12 +5,12 @@
 #
 # HOW TO BUILD THIS IMAGE
 # -----------------------
-# docker build -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-oci-kubernetes-client:1.0 .
-# docker tag fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
-# docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0
+# docker build --pull -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1 .
+# docker tag fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1 fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
+# docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1
 # docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
 
-FROM fra.ocir.io/nose/consultingregistry/oci-cli:latest AS installk8sandutils
+FROM fra.ocir.io/nose/consultingregistry/oci-cli:0.1 AS installk8sandutils
 
 # Maintainer
 # ----------
