@@ -161,3 +161,27 @@ kubectl proxy --address=0.0.0.0 &
 
 http://localhost:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login
 Use the token 
+
+# Test the cluster by exposing nginx
+This will create a deployment running an nginx pod and exposing the container within the pod on an external loadbalancer port 8080:
+```
+kubectl create deployment nginx --image=nginx
+kubectl create service loadbalancer nginx --tcp=8080:80
+```
+Check for the external IP and test it in a browser:
+
+```
+kubectl get services -o wide
+
+NAME         TYPE           CLUSTER-IP    EXTERNAL-IP     PORT(S)          AGE     SELECTOR
+kubernetes   ClusterIP      10.96.0.1     <none>          443/TCP          2d      <none>
+nginx        LoadBalancer   10.96.143.5   132.145.246.5   8080:31741/TCP   5m41s   app=nginx
+```
+
+http://132.145.246.5:8080/
+
+Then remove the service and deployment:
+```
+kubectl delete service nginx
+kubectl delete deployment nginx
+```
