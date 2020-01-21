@@ -37,15 +37,15 @@ This is only required if we want to run kubectl proxy and access (amongst other)
 ### Pass existing kubeconfig
 In this example, the Kubernetes config file "config" and the "tenancy.env" file are located in the current directory:
 ```
-docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%\config",target=/root/.kube/config --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client
-docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)/config",target=/root/.kube/config --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client
+docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%\config",target=/root/.kube/config --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
+docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)/config",target=/root/.kube/config --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
 ```
 
 ### Select the Kubernetes cluster dynamically
 In this example, the "tenancy.env" file is located in the current directory:
 ```
-docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client
-docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client
+docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
+docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
 ```
 Then, from within the shell, create the kubeconfig;
 Get the compartment-id:
@@ -122,13 +122,13 @@ In these examples, the Kubernetes config file "config" and the "tenancy.env" fil
 The my-configmap.yml is located in the kubernetes-deployments directory in the current directory:
 
 ```
-docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/config --mount type=bind,source="%cd%\kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
-docker run --rm --mount type=bind,source="$(pwd)/config",target=/home/oracle/.kube/config --mount type=bind,source="$(pwd)/kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
+docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/config --mount type=bind,source="%cd%\kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env joranlager/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
+docker run --rm --mount type=bind,source="$(pwd)/config",target=/home/oracle/.kube/config --mount type=bind,source="$(pwd)/kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env joranlager/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
 ```
 
 ```
-docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/config --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client kubectl get pods -n default -o wide
-docker run --rm --mount type=bind,source="$(pwd)/config",target=/home/oracle/.kube/config --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client kubectl get pods -n default -o wide
+docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/config --env-file tenancy.env joranlager/oci-kubernetes-client kubectl get pods -n default -o wide
+docker run --rm --mount type=bind,source="$(pwd)/config",target=/home/oracle/.kube/config --env-file tenancy.env joranlager/oci-kubernetes-client kubectl get pods -n default -o wide
 ```
 
 # Accessing the Kubernetes Dashboard
@@ -178,12 +178,11 @@ kubectl delete deployment nginx
 
 # How to build this image
 
-This image uses the fra.ocir.io/nose/consultingregistry/oci-cli:0.1 image as a base image.
+This image uses the joranlager/oci-cli:0.1 image as a base image.
 Please build https://github.com/joranlager/oci-cli before building this image.
 
 It can be built using the standard`docker build` command, as follows: 
 
 ```
-docker build -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 .
-docker tag fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
+docker build -f Dockerfile -t joranlager/oci-kubernetes-client:latest .
 ```
