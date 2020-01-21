@@ -5,7 +5,7 @@
 #
 # HOW TO BUILD THIS IMAGE
 # -----------------------
-# docker build --pull -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1 .
+# docker build -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1 .
 # docker tag fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1 fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
 # docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1
 # docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
@@ -22,9 +22,10 @@ COPY kubectl.sh /root/
 
 RUN yum install yum-utils -y && \
 yum-config-manager --enable ol7_addons && \
-yum repolist && \
 yum install kubectl iputils net-tools sudo curl gettext passwd -y && \
 yum clean all && \
+yum remove -y yum-utils && \
+rm -rf /var/cache/yum/* && \
 chmod 700 /root/kubectl.sh && \
 ln -s /root/kubectl.sh /usr/local/bin/kubectl
 

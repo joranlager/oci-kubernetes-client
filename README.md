@@ -1,26 +1,17 @@
 # oci-kubernetes-client
 
-# How to build this image
-
-```
-docker build -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 .
-docker tag fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
-docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0
-docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
-```
-
 # Running
 
 ## Interactive
 
 ### Pass existing kubeconfig
 ```
-docker run -it --rm -p 8001:8001 --mount type=bind,source="%HOMEDRIVE%%HOMEPATH%\.kube\config",target=/root/.kube/config --mount type=bind,source="%cd%",target=/root/.oci fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1
+docker run -it --rm -p 8001:8001 --mount type=bind,source="%HOMEDRIVE%%HOMEPATH%\.kube\config",target=/root/.kube/config --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env  fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1
 ```
 
 ### Select the Kubernetes cluster dynamically
 ```
-docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%",target=/root/.oci fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1
+docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1
 ```
 Then, from within the shell, create the kubeconfig;
 Get the compartment-id:
@@ -184,4 +175,13 @@ Then remove the service and deployment:
 ```
 kubectl delete service nginx
 kubectl delete deployment nginx
+```
+
+# How to build this image
+
+```
+docker build -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 .
+docker tag fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
+docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0
+docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
 ```
