@@ -179,6 +179,11 @@ kubectl delete deployment nginx
 
 # How to build this image
 
+This image has a dependency to fra.ocir.io/nose/consultingregistry/oci-cli:0.1.
+Please build [https://github.com/joranlager/oci-cli] before building this image.
+
+It can be built using the standard`docker build` command, as follows: 
+
 ```
 docker build -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 .
 docker tag fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
