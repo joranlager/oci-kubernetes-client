@@ -22,9 +22,10 @@ RUN yum install yum-utils -y && \
 yum-config-manager --enable ol7_addons && \
 yum install kubectl iputils net-tools sudo curl gettext passwd -y && \
 yum clean all && \
-yum remove -y yum-utils && \
+#yum remove -y yum-utils && \
 rm -rf /var/cache/yum/* && \
 chmod 700 /root/kubectl.sh && \
-ln -s /root/kubectl.sh /usr/local/bin/kubectl
+ln -s /root/kubectl.sh /usr/local/bin/kubectl && \
+echo "source <(kubectl completion bash)" >> ~/.bashrc
 
-WORKDIR /oci
+WORKDIR /root
