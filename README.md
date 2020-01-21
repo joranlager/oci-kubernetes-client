@@ -1,17 +1,51 @@
-# oci-kubernetes-client
+# oci-kubernetes-client - containerized Kubernetes Client for OCI
 
-# Running
+# Running the oci-kubernetes-client
+
+The current directory will be used to store your OCI CLI certificate and key, so mount it when running the oci-kubernetes-client.
+
+### Creating the tenancy.env file
+Also make sure pass the tenancy.env file to the container setting the properties within that file as ENV variables in the container.
+Make sure to set proper values for the entries in that file.
+The values can be found using the Oracle Cloud Infrastructure web UI.
+
+```
+OCI_TENANCY_NAME=nose
+OCI_TENANCY_OCID=ocid1.tenancy.oc1..aaaaaaaaflfxxx
+OCI_USER_OCID=ocid1.user.oc1..aaaaaaaanufslfkvkyyy
+OCI_REGION=eu-frankfurt-1
+```
+
+### Creating and setting the required certificate and key to access OCI
+For inital setup of the OCI CLI credentials / certificate of if you need to re-configure, run the setup-oci command in the container shell.
+This will overwrite existing certificate and private key so make sure that is the intention.
+```
+setup-oci
+```
+Running the script requires the user to hit enter when the script pauses - then the public key in PEM format is displayed.
+That content must be added as public authentication key for the given user:
+1. Log in to the Oracle Cloud using a browser (https://console.eu-frankfurt-1.oraclecloud.com)
+2. Navigate to Profile -> <user>, then select Resources -> API Keys and Add Public Key.
+3. Paste the public key in PEM format and push Add button.
+
+## Exposing ports from an oci-kubernetes-client container
+These examples show the exposure of the container port 8001 on the host port 8001.
+This is only required if we want to run kubectl proxy and access (amongst other), the Kubernetes Dashboard application from the Docker host.
 
 ## Interactive
 
 ### Pass existing kubeconfig
+In this example, the Kubernetes config file "config" and the "tenancy.env" file are located in the current directory:
 ```
-docker run -it --rm -p 8001:8001 --mount type=bind,source="%HOMEDRIVE%%HOMEPATH%\.kube\config",target=/root/.kube/config --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env  fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1
+docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%\config",target=/root/.kube/config --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client
+docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)/config",target=/root/.kube/config --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client
 ```
 
 ### Select the Kubernetes cluster dynamically
+In this example, the "tenancy.env" file is located in the current directory:
 ```
-docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:0.1
+docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client
+docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client
 ```
 Then, from within the shell, create the kubeconfig;
 Get the compartment-id:
@@ -21,58 +55,17 @@ oci iam compartment list --all | grep -B 4 yourcompartment
 
 Get the list of clusters for the given compartment-id:
 ```
-oci ce cluster list --compartment-id=ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb6fa4jgiuxxxxxxxxxxxxxxxxxxxs2v63u7mjiu4rb2ea
+oci ce cluster list --compartment-id=ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb6fa4jgiucompartmentxs2v63u7mjiu4rb2ea
 
 {
   "data": [
     {
-      "available-kubernetes-upgrades": [
-        "v1.13.5",
-        "v1.14.8"
-      ],
-      "compartment-id": "ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb6fa4jgiuxxxxxxxxxxxxxxxxxxxs2v63u7mjiu4rb2ea",
-      "endpoints": {
-        "kubernetes": "cqtczjrgbtd.eu-frankfurt-1.clusters.oci.oraclecloud.com:6443"
-      },
-      "id": "ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaafsgkmjtmi3dmzdfgjrdgyjzgrtggmzumzsdgyrshcqtczjrgbtd",
-      "kubernetes-version": "v1.12.7",
-      "lifecycle-details": "",
-      "lifecycle-state": "DELETED",
-      "metadata": {
-        "created-by-user-id": "ocid1.saml2idp.oc1..xxxxxxxxf/joran.lager@oracle.com",
-        "created-by-work-request-id": "ocid1.clustersworkrequest.oc1.eu-frankfurt-1.aaaaaaaaafqwmzrvg4zggzrrgyytemjyge4tgmrqg5sgkmjxgwzgmmzrgi2d",
-        "deleted-by-user-id": "ocid1.saml2idp.oc1..xxxxxxxxf/joran.lager@oracle.com",
-        "deleted-by-work-request-id": "ocid1.clustersworkrequest.oc1.eu-frankfurt-1.aaaaaaaaaezdky3ega4den3emu2wcmzxg4ytgnleheztqnbvmwzdeobxmu2g",
-        "time-created": "2019-06-02T20:05:46+00:00",
-        "time-deleted": "2020-01-17T22:21:23+00:00",
-        "time-updated": null,
-        "updated-by-user-id": null,
-        "updated-by-work-request-id": null
-      },
-      "name": "lager",
-      "options": {
-        "add-ons": {
-          "is-kubernetes-dashboard-enabled": true,
-          "is-tiller-enabled": true
-        },
-        "kubernetes-network-config": {
-          "pods-cidr": "10.244.0.0/16",
-          "services-cidr": "10.96.0.0/16"
-        },
-        "service-lb-subnet-ids": [
-          "ocid1.subnet.oc1.eu-frankfurt-1.fdggfdfgdfgdfgdfgd",
-          "ocid1.subnet.oc1.eu-frankfurt-1.uifuisfduiyyuiuiyui"
-        ]
-      },
-      "vcn-id": "ocid1.vcn.oc1.eu-frankfurt-1.jlsfdslfdfkljsfdkljfsdkljfsdklj"
-    },
-    {
       "available-kubernetes-upgrades": [],
-      "compartment-id": "ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb6fa4jgiuxxxxxxxxxxxxxxxxxxxs2v63u7mjiu4rb2ea",
+      "compartment-id": "ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb6fa4jgiucompartmentxs2v63u7mjiu4rb2ea",
       "endpoints": {
         "kubernetes": "c4tazdgmeyg.eu-frankfurt-1.clusters.oci.oraclecloud.com:6443"
       },
-      "id": "ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3wmyjqffffffrxgjssfdsfdsfdqtimjzsfdfsdfsdiolchc4tazdgmeyg",
+      "id": "ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3wmyjqffffffrxgjssfclusterfsdiolchc4tazdgmeyg",
       "kubernetes-version": "v1.14.8",
       "lifecycle-details": "",
       "lifecycle-state": "ACTIVE",
@@ -98,10 +91,10 @@ oci ce cluster list --compartment-id=ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb
           "services-cidr": "10.96.0.0/16"
         },
         "service-lb-subnet-ids": [
-          "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaasrptlafqi7gdazwtxf2mf57okdjpuib75g7ge3ece3g2v2q2cu5q"
+          "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaasrptlafqi7gdazwtxf2mf57okdjpuibssssss5q"
         ]
       },
-      "vcn-id": "ocid1.vcn.oc1.eu-frankfurt-1.amaaaaaa3gkdkiaaf43ogjq747t2gq3dcz3mkdbgsq6dui6yascltelpjpiq"
+      "vcn-id": "ocid1.vcn.oc1.eu-frankfurt-1.amaaaaaa3gkdkiaaf43ogjq747t2gquuuuuuuuuq6dui6yascltelpjpiq"
     }
   ]
 }
@@ -109,7 +102,7 @@ oci ce cluster list --compartment-id=ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb
 
 From the cluster list, find the cluster-id and create the kubeconfig to be able to access it:
 ```
-oci ce cluster create-kubeconfig --cluster-id=ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3wmyjqffffffrxgjssfdsfdsfdqtimjzsfdfsdfsdiolchc4tazdgmeyg
+oci ce cluster create-kubeconfig --cluster-id=ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3wmyjqffffffrxgjssfclusterfsdiolchc4tazdgmeyg
 ```
 
 Then, check access by fetching the list of the nodes in the cluster:
@@ -123,15 +116,19 @@ NAME        STATUS   ROLES   AGE   VERSION   INTERNAL-IP   EXTERNAL-IP      OS-I
 ```
 
 
-## Non-Interactive TODO
+## Running the oci-kubernetes-client non-Interactive
+
+In these examples, the Kubernetes config file "config" and the "tenancy.env" file are located in the current directory.
+The my-configmap.yml is located in the kubernetes-deployments directory in the current directory:
+
 ```
-docker run --rm --mount type=bind,source="$(pwd)/config",target=/home/oracle/.kube/config --mount type=bind,source="$(pwd)/kubernetes-deployments",target=/home/oracle/kubernetes-deployments fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest kubectl create -f kubernetes-deployments/camel-domain-configmap.yml
-docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/config --mount type=bind,source="%cd%\kubernetes-deployments",target=/home/oracle/kubernetes-deployments fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest kubectl create -f kubernetes-deployments/camel-domain-configmap.yml
+docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/config --mount type=bind,source="%cd%\kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
+docker run --rm --mount type=bind,source="$(pwd)/config",target=/home/oracle/.kube/config --mount type=bind,source="$(pwd)/kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
 ```
 
 ```
-docker run --rm --mount type=bind,source="$(pwd)/config",target=/home/oracle/.kube/config fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest kubectl get pods -n backend-dev -o wide
-docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/config fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest kubectl get pods -n backend-dev -o wide
+docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/config --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client kubectl get pods -n default -o wide
+docker run --rm --mount type=bind,source="$(pwd)/config",target=/home/oracle/.kube/config --env-file tenancy.env fra.ocir.io/nose/consultingregistry/oci-kubernetes-client kubectl get pods -n default -o wide
 ```
 
 # Accessing the Kubernetes Dashboard
@@ -144,6 +141,7 @@ kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | gre
 
 
 ### Start the kubernetes proxying
+Then, start the proxy listening on all NICs inside the container exposing the proxy on port 8001:
 ```
 kubectl proxy --address=0.0.0.0 &
 ```
@@ -169,6 +167,7 @@ kubernetes   ClusterIP      10.96.0.1     <none>          443/TCP          2d   
 nginx        LoadBalancer   10.96.143.5   132.145.246.5   8080:31741/TCP   5m41s   app=nginx
 ```
 
+This URL is then accessible from the Internet:
 http://132.145.246.5:8080/
 
 Then remove the service and deployment:
@@ -179,14 +178,12 @@ kubectl delete deployment nginx
 
 # How to build this image
 
-This image has a dependency to fra.ocir.io/nose/consultingregistry/oci-cli:0.1.
-Please build [https://github.com/joranlager/oci-cli] before building this image.
+This image uses the fra.ocir.io/nose/consultingregistry/oci-cli:0.1 image as a base image.
+Please build https://github.com/joranlager/oci-cli before building this image.
 
 It can be built using the standard`docker build` command, as follows: 
 
 ```
 docker build -f Dockerfile -t fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 .
 docker tag fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0 fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
-docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:1.0
-docker push fra.ocir.io/nose/consultingregistry/oci-kubernetes-client:latest
 ```
