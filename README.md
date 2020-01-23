@@ -37,14 +37,14 @@ This is only required if we want to run kubectl proxy and access (amongst other)
 The Kubernetes Client has autocomplete enabled, so hitting TAB will give completion alternatives.
 
 ### Pass existing kubeconfig
-In this example, the Kubernetes config file "config" and the "tenancy.env" file are located in the current directory:
+In this example, the oci certifactes and config file, the Kubernetes config file "kubeconfig" and the "tenancy.env" file are located in the current directory:
 ```
 docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%\kubeconfig",target=/root/.kube/config --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
 docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)/kubeconfig",target=/root/.kube/config --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
 ```
 
 ### Select the Kubernetes cluster dynamically
-In this example, the "tenancy.env" file is located in the current directory:
+In this example, the oci certifactes and config file and the "tenancy.env" file are located in the current directory:
 ```
 docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
 docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
@@ -79,17 +79,17 @@ NAME        STATUS   ROLES   AGE   VERSION   INTERNAL-IP   EXTERNAL-IP      OS-I
 
 ## Running the oci-kubernetes-client non-Interactive
 
-In these examples, the Kubernetes config file "config" and the "tenancy.env" file are located in the current directory.
+In these examples, the Kubernetes config file "kubeconfig", the OCI certificates and config and the "tenancy.env" file are located in the current directory.
 The my-configmap.yml is located in the kubernetes-deployments directory in the current directory:
 
 ```
-docker run --rm --mount type=bind,source="%cd%\config",target=/home/oracle/.kube/kubeconfig --mount type=bind,source="%cd%\kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env joranlager/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
-docker run --rm --mount type=bind,source="$(pwd)/kubeconfig",target=/home/oracle/.kube/config --mount type=bind,source="$(pwd)/kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env joranlager/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
+docker run --rm --mount type=bind,source="%cd%",target=/root/.oci --mount type=bind,source="%cd%\kubeconfig",target=/home/oracle/.kube/config --mount type=bind,source="%cd%\kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env joranlager/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
+docker run --rm --mount type=bind,source="$(pwd)",target=/root/.oci --mount type=bind,source="$(pwd)/kubeconfig",target=/home/oracle/.kube/config --mount type=bind,source="$(pwd)/kubernetes-deployments",target=/home/oracle/kubernetes-deployments --env-file tenancy.env joranlager/oci-kubernetes-client kubectl create -f kubernetes-deployments/my-configmap.yml
 ```
 
 ```
-docker run --rm --mount type=bind,source="%cd%\kubeconfig",target=/home/oracle/.kube/config --env-file tenancy.env joranlager/oci-kubernetes-client kubectl get pods -n default -o wide
-docker run --rm --mount type=bind,source="$(pwd)/kubeconfig",target=/home/oracle/.kube/config --env-file tenancy.env joranlager/oci-kubernetes-client kubectl get pods -n default -o wide
+docker run --rm --mount type=bind,source="%cd%",target=/root/.oci --mount type=bind,source="%cd%\kubeconfig",target=/home/oracle/.kube/config --env-file tenancy.env joranlager/oci-kubernetes-client kubectl get pods -n default -o wide
+docker run --rm --mount type=bind,source="$(pwd)",target=/root/.oci --mount type=bind,source="$(pwd)/kubeconfig",target=/home/oracle/.kube/config --env-file tenancy.env joranlager/oci-kubernetes-client kubectl get pods -n default -o wide
 ```
 
 # Accessing the Kubernetes Dashboard
