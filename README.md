@@ -52,59 +52,26 @@ docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)",target=/root/
 Then, from within the shell, create the kubeconfig;
 Get the compartment-id:
 ```
-oci iam compartment list --all | grep -B 4 yourcompartment
+oci iam compartment list --all | jq '.data[] | .name + " (" + .description + ") OCID: " + .id'
 ```
 
 Get the list of clusters for the given compartment-id:
 ```
-oci ce cluster list --compartment-id=ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb6fa4jgiucompartmentxs2v63u7mjiu4rb2ea
+get-clusters <compartment name 1> <compartment name n>
+```
 
-{
-  "data": [
-    {
-      "available-kubernetes-upgrades": [],
-      "compartment-id": "ocid1.compartment.oc1..aaaaaaaanyaw6hl5bbbb6fa4jgiucompartmentxs2v63u7mjiu4rb2ea",
-      "endpoints": {
-        "kubernetes": "c4tazdgmeyg.eu-frankfurt-1.clusters.oci.oraclecloud.com:6443"
-      },
-      "id": "ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3wmyjqffffffrxgjssfclusterfsdiolchc4tazdgmeyg",
-      "kubernetes-version": "v1.14.8",
-      "lifecycle-details": "",
-      "lifecycle-state": "ACTIVE",
-      "metadata": {
-        "created-by-user-id": "ocid1.saml2idp.oc1..xxxxxxxxf/joran.lager@oracle.com",
-        "created-by-work-request-id": "ocid1.clustersworkrequest.oc1.eu-frankfurt-1.aaaaaaaaae4tamzuhazweyrxgu2domrqgu3dimzrgazgizddmwydcojsg5qt",
-        "deleted-by-user-id": null,
-        "deleted-by-work-request-id": null,
-        "time-created": "2020-01-17T22:24:19+00:00",
-        "time-deleted": null,
-        "time-updated": null,
-        "updated-by-user-id": null,
-        "updated-by-work-request-id": null
-      },
-      "name": "Dive",
-      "options": {
-        "add-ons": {
-          "is-kubernetes-dashboard-enabled": true,
-          "is-tiller-enabled": false
-        },
-        "kubernetes-network-config": {
-          "pods-cidr": "10.244.0.0/16",
-          "services-cidr": "10.96.0.0/16"
-        },
-        "service-lb-subnet-ids": [
-          "ocid1.subnet.oc1.eu-frankfurt-1.aaaaaaaasrptlafqi7gdazwtxf2mf57okdjpuibssssss5q"
-        ]
-      },
-      "vcn-id": "ocid1.vcn.oc1.eu-frankfurt-1.amaaaaaa3gkdkiaaf43ogjq747t2gquuuuuuuuuq6dui6yascltelpjpiq"
-    }
-  ]
-}
+Example running:
+```
+get-clusters mycompartment
+
+Searching for Kubernetes cluster in compartment mycompartment ...
+"Dive (v1.14.8) OCID ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3wmyjqgxxxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyyyyyyyyyyyg"
+Done searching for Kubernetes cluster in compartment mycompartment
 ```
 
 From the cluster list, find the cluster-id and create the kubeconfig to be able to access it:
 ```
-oci ce cluster create-kubeconfig --cluster-id=ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3wmyjqffffffrxgjssfclusterfsdiolchc4tazdgmeyg
+oci ce cluster create-kubeconfig --cluster-id=ocid1.cluster.oc1.eu-frankfurt-1.aaaaaaaaae3wmyjqgxxxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyyyyyyyyyyyg
 ```
 
 Then, check access by fetching the list of the nodes in the cluster:
