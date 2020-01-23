@@ -25,10 +25,10 @@ yum install kubectl iputils net-tools sudo curl gettext passwd -y && \
 yum clean all && \
 #yum remove -y yum-utils && \
 rm -rf /var/cache/yum/* && \
-chmod 700 /root/kubectl.sh && \
-chmod 700 /oci/get-clusters.sh && \
 ln -s /root/kubectl.sh /usr/local/bin/kubectl && \
 ln -s /oci/get-clusters.sh /usr/local/bin/get-clusters && \
+chmod 700 /root/kubectl.sh && \
+chmod 700 /oci/get-clusters.sh && \
 echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 WORKDIR /root
