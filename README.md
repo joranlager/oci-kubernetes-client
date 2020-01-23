@@ -49,18 +49,10 @@ In this example, the "tenancy.env" file is located in the current directory:
 docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
 docker run -it --rm -p 8001:8001 --mount type=bind,source="$(pwd)",target=/root/.oci --env-file tenancy.env joranlager/oci-kubernetes-client
 ```
-Then, from within the shell, create the kubeconfig;
-Get the compartment-id:
-```
-oci iam compartment list --all | jq '.data[] | .name + " (" + .description + ") OCID: " + .id'
-```
 
-Get the list of clusters for the given compartment-id:
-```
-get-clusters <compartment name 1> <compartment name n>
-```
+#### Generate the kubeconfig
 
-Example running:
+Get the list of clusters for the given compartment name:
 ```
 get-clusters mycompartment
 
