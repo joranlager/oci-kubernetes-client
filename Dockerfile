@@ -28,7 +28,7 @@ rm -rf /var/cache/yum/* && \
 ln -s /root/kubectl.sh /usr/local/bin/kubectl && \
 ln -s /oci/get-clusters.sh /usr/local/bin/get-clusters && \
 chmod 700 /root/kubectl.sh && \
-chmod 700 /oci/get-clusters.sh && \
-echo "source <(kubectl completion bash)" >> ~/.bashrc
+chmod 700 /oci/get-clusters.sh
+#echo "source <(kubectl completion bash)" >> ~/.bashrc
 
 WORKDIR /root
