@@ -6,7 +6,7 @@ numcompartments=0
 
 until [ $numcompartments -gt 0 ]
 do
-  oci iam compartment list --all > compartments.json
+  oci iam compartment list --all --compartment-id-in-subtree true > compartments.json
   numcompartments=$(cat compartments.json | wc -l)
 done
 

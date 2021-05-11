@@ -14,17 +14,20 @@ FROM joranlager/oci-cli:latest AS installk8sandutils
 # ----------
 MAINTAINER Joran Lager <joran.lager@oracle.com>
 
+ENV OCI_CLI_SUPPRESS_FILE_PERMISSIONS_WARNING=True
+
 USER root
 
 COPY kubectl.sh /root/
 COPY get-clusters.sh /oci/
 
-RUN yum install yum-utils -y && \
-yum-config-manager --enable ol7_addons && \
-yum install kubectl iputils net-tools sudo curl gettext passwd -y && \
-yum clean all && \
-#yum remove -y yum-utils && \
-rm -rf /var/cache/yum/* && \
+ARG KUBERNETES_VERSION=v1.21.0
+
+RUN curl -L https://dl.k8s.io/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl -o /usr/bin/kubectl;chmod +x /usr/bin/kubectl && \
+#curl -LO "https://dl.k8s.io/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl.sha256" && \
+#echo "$(<kubectl.sha256) kubectl" | sha256sum --check && \
+microdnf install iputils net-tools sudo curl gettext passwd -y && \
+microdnf clean all && \
 ln -s /root/kubectl.sh /usr/local/bin/kubectl && \
 ln -s /oci/get-clusters.sh /usr/local/bin/get-clusters && \
 chmod 700 /root/kubectl.sh && \
