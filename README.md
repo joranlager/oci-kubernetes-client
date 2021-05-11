@@ -139,8 +139,7 @@ kubectl delete deployment nginx
 
 # How to build this image
 
-This image uses the joranlager/oci-cli:0.1 image as a base image.
-Please build https://github.com/joranlager/oci-cli before building this image.
+This image uses the joranlager/oci-cli:latest image as a base image.
 
 It can be built using the standard`docker build` command, as follows: 
 
