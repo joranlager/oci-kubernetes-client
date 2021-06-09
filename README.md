@@ -39,7 +39,7 @@ This is only required if we want to run kubectl proxy and access (amongst other)
 Make sure to open a Shell and set the current working Directory to the directory containing the prepared files and directories.
 Then for Windows Command Shell run:
 ```
-docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%\.oci",target=/root/.oci --mount type=bind,source="%cd%\.kube",target=/root/.kube/ --mount type=bind,source="%cd%\kubernetes-yamls",target=/root/kubernetes-yamls--env-file "%cd%\tenancy.env" joranlager/oci-kubernetes-client
+docker run -it --rm -p 8001:8001 --mount type=bind,source="%cd%\.oci",target=/root/.oci --mount type=bind,source="%cd%\.kube",target=/root/.kube/ --mount type=bind,source="%cd%\kubernetes-yamls",target=/root/kubernetes-yamls --env-file "%cd%\tenancy.env" joranlager/oci-kubernetes-client
 ```
 
 Or for Bash run:
