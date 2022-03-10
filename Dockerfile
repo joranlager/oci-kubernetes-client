@@ -5,12 +5,12 @@
 #
 # HOW TO BUILD THIS IMAGE
 # -----------------------
-# docker build -f Dockerfile -t joranlager/oci-kubernetes-client:2.25.2-1.21.1 .
-# docker tag joranlager/oci-kubernetes-client:2.25.2-1.21.1 joranlager/oci-kubernetes-client:latest
-# docker push joranlager/oci-kubernetes-client:2.25.2-1.21.1
+# docker build -f Dockerfile -t joranlager/oci-kubernetes-client:3.6.0-1.21.5 .
+# docker tag joranlager/oci-kubernetes-client:3.6.0-1.21.5 joranlager/oci-kubernetes-client:latest
+# docker push joranlager/oci-kubernetes-client:3.6.0-1.21.5
 # docker push joranlager/oci-kubernetes-client:latest
 
-FROM joranlager/oci-cli:2.25.2 AS installk8sandutils
+FROM joranlager/oci-cli:3.6.0 AS installk8sandutils
 
 # Maintainer
 # ----------
@@ -23,8 +23,9 @@ USER root
 COPY kubectl.sh /root/
 COPY get-clusters.sh /oci/
 
-ARG KUBERNETES_VERSION=v1.21.1
-ARG HELM_VERSION=v3.5.4
+ARG KUBERNETES_VERSION=v1.21.5
+#https://helm.sh/docs/topics/version_skew/
+ARG HELM_VERSION=v3.8.1
 
 RUN microdnf install iputils net-tools sudo curl gettext passwd git tar -y && \
 microdnf clean all && \
